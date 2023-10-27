@@ -1,4 +1,4 @@
-import LayoutDefault from '../layouts/LayoutDefault/layoutDefault'
+import LayoutDefault from '../layouts/LayoutDefault/layoutDefault.js'
 import Home from '../pages/Home/index'  
 
 export const routes = [

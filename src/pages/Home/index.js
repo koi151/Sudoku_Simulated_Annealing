@@ -1,11 +1,12 @@
 import SudokuBoard from "../../components/SudokuBoard/sudokuBoard";
+import Timer from "../../components/Time/timeCounter";
 
 function Home() {
   return (
-    <>
-      <h2>Sudoku</h2>
+    <div>
+      <Timer />
       <SudokuBoard />
-    </>
+    </div>
   )
 }
 
