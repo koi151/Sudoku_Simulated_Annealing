@@ -1,47 +1,38 @@
-// .app {
-//   text-align: center;
-//   background-color: #282c34;
-//   min-height: 100vh;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   justify-content: center;
-//   font-size: calc(10px + 2vmin);
-//   color: white;
-// }
+.time {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-right: 2rem;
 
-// .time {
-//   font-size: 3rem;
-//   padding: 2rem;
-// }
+  &__display {
+    font-family: monospace;
+    font-size: 1.1rem;
+    height: 100%;
+    color: #fff;
+    // margin-left: .5rem;
+  }
 
-// .button {
-//   padding: .6rem 1.5rem;
-//   margin: .4rem;
-//   border-radius: 3px;
-//   text-transform: uppercase;
-//   font-weight: 600;
-//   font-size: .8rem;
-//   border-style: groove;
-// }
+  &__controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: .2rem;
+    margin: 0 .4rem;
+    background-color: #8DADB8;
+    border-radius: 50%;
+    transition: all .3s;
 
-// .button:focus {
-//   outline-width: 0;
-// }
-
-// .button-primary:hover {
-//   background-color: #2641d4;
-//   border: 1px solid #1b1f2b;
-// }
-
-// .button-primary-active {
-//   background-color: #3151ff;
-//   border: 1px solid #152684;
-//   color: white;
-// }
-
-// .button-primary-inactive {
-//   background-color: #3151ff;
-//   border: 1px solid #152684;
-//   color: white;
-// }
+    &:hover {
+      cursor: pointer;
+      transform: scale(1.2);
+      background-color: #a5bcc5;
+    }
+    
+    svg {
+      color: #fff;
+      font-size: .7rem;
+    }
+  }
+}

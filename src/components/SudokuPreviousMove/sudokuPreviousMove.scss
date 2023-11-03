@@ -1,0 +1,12 @@
+.previous-move {
+  position: relative;
+  &:hover {
+    transform: scale(1.1) ;
+    background-color: #70afad79;
+  }
+
+  svg {
+    font-size: 1.9rem;
+    color: #fff;
+  }
+}

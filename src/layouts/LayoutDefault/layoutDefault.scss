@@ -3,15 +3,14 @@
     background: #fff;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #ddd;
     height: 70px;
-    // position: sticky;
     top: 0;
-    z-index: 999;
+    transition: top .3s;
+    position: sticky;
+    z-index: 99;
   }
 
   &__logo {
-    border-right: 1px solid #ddd;
     width: 200px;
     display: flex;
     align-items: center;
@@ -37,7 +36,6 @@
   }
 
   &__sider {
-    border-right: 1px solid #ddd;
     height: calc(100vh - 70px);
     position: fixed!important;
     top: 70px;
@@ -47,12 +45,12 @@
   &__content {
     background: #fff; //
     padding: 50px;
-    padding-bottom: 80px;
-    margin-left: 200px;
-    transition: all 0.2s;
+    padding-bottom: 150px;
+    padding-left: 200px;
+    transition: all .2s;
 
     &--full {
-      margin-left: 80px;
+      padding-left: 80px;
     }
   }
 
@@ -68,4 +66,9 @@
       margin-left: 80px;
     }
   }
+}
+
+.pad-lr-0 {
+  padding-left: 0;
+  padding-right: 0;
 }

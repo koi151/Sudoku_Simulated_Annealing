@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Outlet } from 'react-router-dom';
 
 import { Layout } from "antd";
@@ -15,6 +15,39 @@ import './layoutDefault.scss'
 
 function LayoutDefault() {
   const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    const header = document.querySelector('header');
+    const sider = document.querySelector('aside');
+
+    let lastScrollTop = 0;
+    const onScroll = () => {
+      const contentLayout = document.querySelector('.layout__content');
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+      if (scrollTop > lastScrollTop && scrollTop > 50) {
+        contentLayout.classList.add('pad-lr-0');
+       
+        // Scrolling down, hide the navbar
+        header.style.top = '-80px';
+        if (collapsed) {
+          sider.style.left = '-80px';
+        } else {
+          sider.style.left = '-200px';
+        }
+          
+
+      } else {
+        // Scrolling up, show the navbar
+        contentLayout.classList.remove('pad-lr-0');
+        header.style.top = '0';
+        sider.style.left = '0';
+      }
+      lastScrollTop = scrollTop;
+    };
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [collapsed]);
 
   return (
     <Layout>

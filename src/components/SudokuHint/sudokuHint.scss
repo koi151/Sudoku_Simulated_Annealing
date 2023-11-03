@@ -1,0 +1,33 @@
+.hint-btn {
+  position: relative;
+  &:hover {
+    transform: scale(1.1) ;
+    background-color: #70afad79;
+  }
+
+  svg {
+    font-size: 2rem;
+    color: #fff;
+  }
+
+  &__hint-left {
+    background: #70afad;
+    border: 1px solid #ffffffaa;
+    padding: 0 .4rem;
+    border-radius: 50%;
+    top: -0.1rem;
+    right: -.3rem;
+    position: absolute;
+    cursor: pointer;
+    color: #fff;
+    font-size: .9rem;
+  }
+}
+
+.active {
+  background-color: #80dfdc79;
+  &:hover {
+    transform: scale(1.1) ;
+    background-color: #80dfdc79;
+  }
+}

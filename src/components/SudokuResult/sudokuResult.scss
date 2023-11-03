@@ -1,0 +1,40 @@
+.result-theme {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0000009e;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  border-radius: 15px;
+  z-index: 9;
+
+  &__box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 16rem;
+    padding: .75rem 1.5rem;
+    border-radius: 10px;
+    background: #fff;
+
+    &--title {
+      color: #318aa5;
+      text-align: center;
+      margin: .75rem;
+    }
+
+    strong {
+      text-align: center;
+      color: #94a3b7;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      margin-bottom: .75rem;
+    }
+  }
+}

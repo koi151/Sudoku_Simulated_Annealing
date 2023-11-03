@@ -1,44 +1,49 @@
-import { useState, useRef } from "react";
-import { Button, Popconfirm, message } from "antd";
+// React hooks - redux
+import { useEffect, memo } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { setCurrentBoard, setLiveLeft, setGameStarted, 
+        setInitialBoard, resetSudoku, setHintLeft, addMoveToHistory } from "../../redux/reduxSlices/sudokuSlice";
+// NPM        
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+// Components - utils
+import SudokuHint from "../SudokuHint/sudokuHint";
+import SudokuAutoSolve from "../SudokuAutoSolve/sudokuAutoSolve";
+import Timer from '../Time/timeCounter'
+import SudokuReset from "../SudokuReset/sudokuReset";
+import SudokuPreviousMove from "../SudokuPreviousMove/sudokuPreviousMove";
+import SudokuResult from "../SudokuResult/sudokuResult";
+import { generateSudoku } from '../../utils/generateSudoku.util';
+// Icons
+import { FaHeart } from "react-icons/fa6";
+import { IoPlayCircle } from "react-icons/io5";
+import { Segmented } from 'antd';
+
 import './sudokuBoard.scss'
+import SudokuUserInfo from "../SudokuUserInfo/sudokuUserInfo";
 
 function SudokuBoard() {
- 
-  const initialBoard = [
-    [0, 2, 4, 0, 0, 7, 0, 0, 0],
-    [6, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 3, 6, 8, 0, 4, 1, 5],
-    [4, 3, 1, 0, 0, 5, 0, 0, 0],
-    [5, 0, 0, 0, 0, 0, 0, 3, 2],
-    [7, 9, 0, 0, 0, 0, 0, 6, 0],
-    [2, 0, 9, 7, 1, 0, 8, 0, 0],
-    [0, 4, 0, 0, 9, 3, 0, 0, 0],
-    [3, 1, 0, 0, 0, 4, 7, 5, 0]
-  ];
+  const dispatch = useDispatch();
 
-  const [time, setTime] = useState(0);
-  // const [timerOn, setTimerOn] = useState(false);
-  const [board, setBoard] = useState(initialBoard);
-  const [selectedCell, setSelectedCell] = useState(null);
-  const [highlightedRow, setHighlightedRow] = useState(null);
-  const [highlightedColumn, setHighlightedColumn] = useState(null);
-  const [gameOver, setGameOver] = useState(false);
-
-  const liveLeft = useRef(3);
-
-  console.log('render')
-  const handleResetClick = () => {
-    liveLeft.current = 3;
-
-    // setTime(0);
-    // setTimerOn(false);
-
-    setBoard(initialBoard);
-    setGameOver(false);
-  };
+  const currentBoard = useSelector((state) => state.sudoku.currentBoard);
+  const solvedBoard = useSelector((state) => state.sudoku.solvedBoard);
+  const hintMode = useSelector((state) => state.sudoku.hintMode);
+  const isSolving = useSelector((state) => state.sudoku.solving);
+  const autoSolved = useSelector((state) => state.sudoku.autoSolved);
+  const gameStarted = useSelector((state) => state.sudoku.gameStarted);
+  const liveLeft = useSelector((state) => state.sudoku.liveLeft);
+  const initialBoard = useSelector((state) => state.sudoku.initialBoard);
+  const hintLeft = useSelector((state) => state.sudoku.hintLeft);
+  const moveHistory = useSelector((state) => state.sudoku.moveHistory);
+  
+  useEffect(() => {  
+    const board = generateSudoku('easy');
+    dispatch(setInitialBoard(board));
+    dispatch(setCurrentBoard(board));
+  }, [])
   
   const totalCellInputed = (board) => {
-    if (gameOver) return;
+    if (!gameStarted) return;
 
     let total = 0;
     for (let i = 0; i < board.length; i++)
@@ -48,52 +53,73 @@ function SudokuBoard() {
     return total;
   } 
 
-  const totalInputed = totalCellInputed(board);
+  const totalInputed = totalCellInputed(currentBoard);
 
   const handleCellClick = (e, rowIndex, colIndex) => {
-    if (gameOver) return;
-
+    if (!gameStarted) return;
+    
     // Remove previous class
-    const cells = document.querySelectorAll('.cell');
-     cells.forEach(cell => {
-        cell.classList.remove('highlighted');
-        cell.classList.remove('active');
+    const cells = document.querySelectorAll('.cell'); // mixin
+    cells.forEach(cell => {
+        cell.classList.remove('highlighted', 'active', 'user-inputed');
     });
   
-    const currentCell = e.target.closest(".cell");
+    const currentCell = e.target.parentNode;
     currentCell.classList.add('active');
-
-    // Get the input element and focus it
-    const inputElement = currentCell.querySelector('.cell__input-value');
-    if (inputElement) {
-      inputElement.focus();
-    }
-
-    setSelectedCell({ rowIndex, colIndex });
-   
-    // Highlight all cells in the same row, column and 3x3 block
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 9; j++) {
-          if (i === rowIndex && j === colIndex) continue; // skip active cell
-          if (i === rowIndex || j === colIndex || 
-              (Math.floor(i / 3) === Math.floor(rowIndex / 3) && Math.floor(j / 3) === Math.floor(colIndex / 3))) 
-          {
-              const cells = document.querySelector(`.sudoku-table__row:nth-child(${i + 1}) .cell:nth-child(${j + 1})`);
-              cells.classList.add('highlighted');
-          }
+    
+    if (!hintMode) {
+      // Get the input element and focus it
+      const inputElement = e.target
+      if (inputElement) {
+        inputElement.focus();
       }
-    }
+    
+      // Highlight all cells in the same row, column and 3x3 block
+      for (let i = 0; i < 9; i++) {  // split into mixin -> funcName(r, c)
+        for (let j = 0; j < 9; j++) {
+            if (i === rowIndex && j === colIndex) continue; // skip checking active cell
+            if (i === rowIndex || j === colIndex || 
+                (Math.floor(i / 3) === Math.floor(rowIndex / 3) && Math.floor(j / 3) === Math.floor(colIndex / 3))) 
+            { 
+              const cells = document.querySelector(`.sudoku-table__row:nth-child(${i + 1}) .cell:nth-child(${j + 1})`);
+              if (!cells.classList.contains('user-inputed')) {
+                cells.classList.add('highlighted');
+              }
+            }
+        }
+      }
 
-    setHighlightedRow(rowIndex);
-    setHighlightedColumn(colIndex);
+    } else { // hintMode
+      if (hintLeft === 0) return;
+      const hintValue = solvedBoard[rowIndex][colIndex];
+
+      const newBoard = currentBoard.map((row) => [...row]);
+      newBoard[rowIndex][colIndex] = hintValue;
+      dispatch(setCurrentBoard(newBoard));
+
+      const currentCell = document.querySelector(".active");
+      currentCell.classList.add('user-inputed');
+
+      const currentInput = currentCell.querySelector('.cell__input-value'); 
+      currentInput.classList.remove('v-hidden'); 
+      currentInput.setAttribute('disabled', true);
+      dispatch(setHintLeft(hintLeft-1));
+    }
   }
 
 
   const handleInputChange = (e, rowIndex, colIndex) => {
     const value = e.target.value;
     if (value === '' || (value >= 1 && value <= 9)) {
-        const newBoard = [...board];
+        const newBoard = currentBoard.map((row) => [...row]);
+
         newBoard[rowIndex][colIndex] = value ? Number(value) : 0;
+
+        // Add to history
+        const lastPos = moveHistory.length;
+        if ( !lastPos || moveHistory[lastPos-1][0] !== rowIndex || moveHistory[lastPos-1][1] !== colIndex) { // first time add or satisfied condition for other time
+          dispatch(addMoveToHistory([rowIndex, colIndex]));
+        }
 
         if (value === '') {
           e.target.parentNode.classList.remove('wrong-pos')
@@ -110,6 +136,7 @@ function SudokuBoard() {
                 }
             }
           }
+
         } else {
           let mistake = false;
           for (let i = 0; i < 9; i++) {
@@ -128,65 +155,201 @@ function SudokuBoard() {
           }
           if (mistake === true) {
             e.target.parentNode.classList.add('wrong-pos');
-            liveLeft.current -= 1;
-          } if (liveLeft.current === 0) {
-            setGameOver(true);
+            dispatch(setLiveLeft(liveLeft - 1));
+          } if (liveLeft === 0) { 
+            dispatch(setGameStarted(false));
           }
         }
-        setBoard(newBoard);
+
+        const currrentCell = document.querySelector('.active');
+        currrentCell.classList.add('user-inputed');
+        dispatch(setCurrentBoard(newBoard));
     }
 }
 
-  const confirmReset = (e) => {
-    message.success('New game started !');
-    handleResetClick();
-  };
+  useEffect(() => {
+    const delay = 70;
+    const userInputs = document.querySelectorAll('.cell__input-value:not([disabled])');
+  
+    const addAutoSolveEffect = (index) => {
+      if (index < userInputs.length) {
+        setTimeout(() => {
+          userInputs[index].classList.remove('v-hidden');
+          userInputs[index].classList.add('auto-solve-effect');
 
-  return (
+          const cell =  userInputs[index].parentNode;
+          cell.classList.add('user-inputed');
+
+          addAutoSolveEffect(index + 1);
+        }, delay);
+      }
+    };
+  
+    if (autoSolved) {
+      addAutoSolveEffect(0);
+    }
+  }, [autoSolved]);
+  
+  const toggleContinue = () => {
+    dispatch(setGameStarted(!gameStarted));
+  }
+
+  const handleSegmentedChange = (option) => {
+    const standardlize = option.toLowerCase();
+    dispatch(setGameStarted(false));
+
+    dispatch(resetSudoku());
+
+    const newBoard = generateSudoku(standardlize);
+    dispatch(setInitialBoard(newBoard));
+
+    dispatch(setCurrentBoard(newBoard));
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => {
+      cell.classList.remove('user-inputed');
+      const input = cell.querySelector('.cell__input-value');
+      input.removeAttribute("disabled");
+      input.classList.remove('v-hidden');
+      input.classList.remove('auto-solve-effect');
+    })
+
+  }
+
+  useEffect(() => {
+    const cellInputs = document.querySelectorAll('.cell__input-value');
+
+    if (!gameStarted) {
+      const cells = document.querySelectorAll('.cell');
+      cells.forEach(cell => {
+        cell.classList.remove('highlighted');
+        cell.classList.remove('active');
+      })
+
+      cellInputs.forEach(input => {
+        input.setAttribute("disabled", true);
+      })
+
+    } else {
+      cellInputs.forEach(input => {
+        input.classList.remove('v-hidden');
+
+        const rowIndex = parseInt(input.getAttribute('data-row-index'));
+        const colIndex = parseInt(input.getAttribute('data-col-index'));
+      
+        if (initialBoard[rowIndex][colIndex] === 0) {
+          input.removeAttribute('disabled');
+        }
+      });
+    }
+  }, [gameStarted])
+
+  // console.log('moveHistory', moveHistory)
+  console.log('currentBoard', currentBoard);
+
+  return (  
     <>
       <div className="sudoku-wrapper">
-        <table className="sudoku-table">
-          <tbody>
-            {board.map((row, rowIndex) => (
-              <tr className="sudoku-table__row" key={rowIndex}>
-                {row.map((cell, colIndex) => (
-                  <td key={colIndex}
-                      className={"cell"} 
-                      onClick={(e) => handleCellClick(e, rowIndex, colIndex)}
-                  >
-                    <input 
-                      className="cell__input-value"
-                      value = {cell !== 0 ? cell : ''} 
-                      onChange={(e) => handleInputChange(e, rowIndex, colIndex)}
-                      maxLength={1}
-                      disabled={initialBoard[rowIndex][colIndex] !== 0}
-                    />
-                    <div className="notes">
-                      {[...Array(8)].map((_, i) => (
-                        <div key={i} className="notes-items"></div>
-                      ))}
-                    </div>
-                  </td>
-                ))}
-              </tr>
+        <div className="sudoku-wrapper__top">
+          <Segmented 
+            options={['Easy', 'Medium', 'Hard']} 
+            className='game-mode' 
+            onChange={handleSegmentedChange}
+          />
+          <div className="sudoku-live-left">
+            <span>Lives left:</span>
+            {[...Array(liveLeft)].map((_, i) => (
+              <FaHeart key={i} />
             ))}
-          </tbody>
-        </table>
+          </div>
+          {totalInputed !== 81 ? <Timer /> : <Timer reset={true} />}
+        </div>
+        <div className="sudoku-wrapper__bottom">
+          <div className="table-wrapper">
+            {!gameStarted && liveLeft > 0 && 
+              <div className="pause-theme" onClick={() => toggleContinue()}>
+                <IoPlayCircle />
+              </div>
+            }
+            {totalInputed === 81 && <SudokuResult win={true}/> }
+            {liveLeft === 0 && <SudokuResult win={false}/>}
+            {currentBoard.length > 0 ? (
+              <table className="sudoku-table">
+                <tbody>
+                    {currentBoard.map((row, rowIndex) => (
+                      <tr className="sudoku-table__row" key={rowIndex}>
+                        {row.map((cell, colIndex) => (
+                          <td key={colIndex}
+                              className={"cell"} 
+                          >
+                            {!isSolving || initialBoard[rowIndex][colIndex] !== 0 ? 
+                              <input 
+                                className={`cell__input-value ${!gameStarted ? 'v-hidden' : ""}`}
+                                value = {cell !== 0 ? cell : ''} 
+                                onChange={(e) => handleInputChange(e, rowIndex, colIndex)}
+                                onClick={(e) => handleCellClick(e, rowIndex, colIndex)}
+                                maxLength={1}
+                                disabled={initialBoard[rowIndex][colIndex] !== 0}
+                                data-row-index={rowIndex}
+                                data-col-index={colIndex}
+                                /> 
+                            : ( 
+                              <>
+                                <input 
+                                  className="cell__input-skeleton"
+                                />
+                                <SkeletonTheme baseColor="#fff" highlightColor="#eee">
+                                  <Skeleton width={'100%'} height={'160%'}/>
+                                </SkeletonTheme>
+                              </> 
+                              
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+              </table>
+            ) : (
+              <table className="sudoku-table">
+                <tbody>
+                    {currentBoard.map((row, rowIndex) => (
+                      <tr className="sudoku-table__row" key={rowIndex}>
+                          {row.map((cell, colIndex) => (
+                            <td key={colIndex}
+                                className={"cell"} 
+                            >
+                              <input className="cell__input-skeleton" style={{background: 'none'}}/>
+                              <SkeletonTheme baseColor="#fff" highlightColor="#eee">
+                                <Skeleton width={'100%'} height={'160%'}/>
+                              </SkeletonTheme>
+                            </td>
+                          ))}
+                      </tr>
+                    ))}
+                  </tbody>
+              </table>
+            )}
+          </div>
+          <div className="sudoku-controls">
+            <div className="sudoku-controls__btn-wrapper">
+              <SudokuUserInfo />
+              <SudokuReset />
+              <SudokuHint />
+              <SudokuAutoSolve />
+              <SudokuPreviousMove />
+            </div>
+            
+          </div>
+        </div>
       </div>
-      {totalInputed === 81 && <h2>Win</h2>}
-      {liveLeft.current === 0 && <h2>Losed</h2>}
-      {/* <button onClick={() => handleResetClick()}>reset</button> */}
-      <Popconfirm
-        title="Game reset"
-        description="Are you sure to reset the game ?"
-        onConfirm={confirmReset}
-        okText="Yes"
-        cancelText="No"
-      >
-        <Button danger>Reset</Button>
-      </Popconfirm>
     </>
   )
 }
 
-export default SudokuBoard;
+export default memo(SudokuBoard);
+
+
+/*
+
+disabled
+*/

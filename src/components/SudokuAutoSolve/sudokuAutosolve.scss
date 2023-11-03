@@ -1,0 +1,11 @@
+.auto-solve-btn {
+  &:hover {
+    transform: scale(1.1) ;
+    background-color: #70afad79;
+  }
+
+  svg {
+    font-size: 1.8rem;
+    color: #fff;
+  }
+}

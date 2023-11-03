@@ -16,3 +16,24 @@ code {
 main {
   background: -webkit-linear-gradient(0deg, hsla(148, 89%, 78%, 1) 0%, hsla(152, 65%, 72%, 1) 0%, hsla(164, 37%, 57%, 1) 17%, hsla(178, 31%, 45%, 1) 38%, hsla(194, 45%, 34%, 1) 68%, hsla(203, 59%, 28%, 1) 88%, hsla(210, 81%, 22%, 1) 100%) !important;
 }
+
+.d-none {
+  display: none !important;
+}
+
+.v-hidden {
+  visibility: hidden !important;
+}
+
+.btn-controllers {
+  background-color: #ffffff2a;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  transition: all .5s;
+  margin: 1rem;
+  margin-bottom: 0;
+}

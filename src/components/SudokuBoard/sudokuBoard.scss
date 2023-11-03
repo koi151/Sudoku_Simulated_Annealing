@@ -1,112 +1,209 @@
 .sudoku-wrapper {
+  position: relative;
   width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
 
-  .sudoku-table {
-    width: 34rem;
-    height: 34rem;
-    border-collapse: collapse;
-    border: 5px solid transparent;
-    border-radius: 15px;
-    overflow: hidden;
+  .sudoku-live-left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: ease-in-out .3s;
+    margin-right: 3rem;
+    margin-left: 2.5rem;
 
-    &__row {
-      border: 2px solid #d5d3d3;
+    span {
+      color: #fff;
+      margin-right: .5rem;
+    }
 
-      &:nth-child(3n) {
-        border-bottom: 4px solid transparent;
+    svg {
+      color: #fff;
+      margin-right: .3rem;
+      transition: all .3s;
+    }
+  }
+
+  &__top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .game-mode {
+      margin-right: 1rem;
+      background: transparent;
+      color: #fff;
+
+      .ant-segmented-group {
+        justify-content: space-between;
+        width: 14rem;
       }
 
-      .cell {
-        background: #fff;
-        z-index: 5;
-        position: relative;
-        border: 2px solid #d5d3d3;
+      .ant-segmented-item {
+        padding: 0 .5rem;
+      }
 
-        vertical-align: middle;
-        margin: 0; 
-        padding: 0;
+      .ant-segmented-item-label {
+        color: #fff !important;
+        // background: transparent;
+      }
+
+      .ant-segmented-item-selected {
+        background-color: #70afad;
+      }
+
+      .ant-segmented-thumb {
+        background-color: #70afad;
+      }
+    }
+
+  }
+
+  &__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .sudoku-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .table-wrapper {
+      position: relative;
+
+      .pause-theme {
+        position: absolute;
+        top: 40.5%;
+        left: 42%;
+        color: #3B7B85;
+        font-size: 5rem;
+        z-index: 98;
+        cursor: pointer;
+        transition: all .3s;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+
+      .sudoku-table {
+        width: 30rem;
+        height: 30rem;
+        border-collapse: collapse;
+        border: 5px solid transparent;
+        border-radius: 15px;
         overflow: hidden;
-        transition: all .2s ease-out;
 
-        &:not(.active) {
-            &:hover {
-              background-color: #e7e4e4c4;
-              // border: 2px solid #d1a82d
+        &__row {
+          border: 2px solid #d5d3d3;
+
+          &:nth-child(3n) {
+            border-bottom: 4px solid transparent;
+          }
+
+          .cell {
+            background: #fff;
+            z-index: 5;
+            position: relative;
+            border: 2px solid #d5d3d3;
+            vertical-align: middle;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            transition: all .2s ease-out;
+            cursor: pointer;
+
+            &:not(.active) {
+              &:hover {
+                background-color: #e7e4e4c4;
+              }
+            }
+
+            &__input-skeleton {
+              width: 100%;
+              height: 0;
+            }
+
+            &__input-value {
+              font-family: 'Fira Sans', sans-serif;
+              text-align: center;
+              font-size: 1.6rem;
+              color: #444;
+              font-weight: 400;
+              width: 100%;
+              height: 100%;
+              border: none;
+              outline: none;
+              background: transparent;
+              cursor: pointer;
+
+              &:focus {
+                transform: scale(1.15);
+                outline: none;
+                caret-color: transparent;
+              }
+
+            }
+
+            &:nth-child(3n) {
+              border-right: 4px solid transparent;
             }
           }
-      
-        .notes {
-          // z-index: 2;
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
 
-          .notes-items {
-            width: 100%;
-            height: 100%;
-          }
-        }
-
-        &__input-value {
-          font-family: 'Fira Sans', sans-serif;
-          text-align: center;
-          font-size: 1.6rem;
-          color: #444;
-          font-weight: 400;
-          width: 100%;
-          border: none;
-          outline: none;
-          background: transparent;
-          transition: all .5s;
-
-          &:focus {
-            transform: scale(1.2);
-            outline: none;
-            caret-color: transparent;
+          .user-inputed {
+            background: rgb(222, 239, 232);
           }
 
-        }
-        
-        // &:not(.active) {
-        //   &:hover {
-        //     background-color: #e7e4e4c4;
-        //     border: 2px solid #d1a82d
-        //   }
-        // }
+          .active {
+            // background: rgb(240, 222, 192);
+            background: #a1e7d1;
 
-        &:nth-child(3n) {
-          border-right: 4px solid transparent;
-        }
-      }
+            .cell__input-value {
+              // color: #e6a40a;
+              color: #fff;
+            }
+          }
 
-      .active {
-        // transform: scale(.9);
-        background: rgb(222, 239, 232);
+          .highlighted {
+            // background: #ededed;
+            background: #D3F4E9;
+          }
 
-        .cell__input-value {
-          color: #61D8B2;
-        }
-      }
+          .wrong-pos {
+            background: #f9b2b2;
 
-      .highlighted {
-        background: #e8e8e8;
-      }
-
-      .wrong-pos {
-        background: #f9b2b2;
-        .cell__input-value {
-          transform: none;
-          color: #ed4747;
+            .cell__input-value {
+              transform: none;
+              color: #ed4747;
+            }
+          }
         }
       }
     }
+  }
+}
+
+.auto-solve-effect {
+  animation: scaleAnimation 1s;
+  color: #e6a40a !important;
+}
+
+
+@keyframes scaleAnimation {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
   }
 }

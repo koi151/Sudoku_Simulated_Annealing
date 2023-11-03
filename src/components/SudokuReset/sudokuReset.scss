@@ -1,0 +1,12 @@
+.reset-btn-wrapper {
+  &:hover {
+    transform: rotate(-180deg) scale(1.1) ;
+    background-color: #70afad79;
+  }
+
+  svg {
+    font-size: 2rem;
+    color: #fff;
+    transform: rotate(120deg);
+  }
+}
