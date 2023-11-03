@@ -1,76 +1,29 @@
 import { Menu } from "antd";
-import {
-  DashboardOutlined,
-  // AppstoreOutlined,
-  // UnorderedListOutlined,
-  // SettingOutlined,
-} from "@ant-design/icons";
+import { DashboardOutlined } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
+import { GrAchievement } from "react-icons/gr";
+
 
 function SiderMenu() {
   const location = useLocation();
 
   const items = [
     {
-      key: "gameplay",
+      key: "/",
       label: <Link to="/">Gameplay</Link>,
       icon: <DashboardOutlined />,
-      // children: [
-      //   {
-      //     key: "/",
-      //     label: <Link to="/">Home</Link>,
-      //   },
-        // {
-        //   key: "/crm",
-        //   label: <Link to="/crm">CRM</Link>,
-        // },
-        // {
-        //   key: "/booking-room",
-        //   label: <Link to="/booking-room">Booking Room</Link>,
-        // },
-    //   ],
-    // },
-    // {
-    //   key: "/room",
-    //   label: <Link to="/room">Room Manager</Link>,
-    //   icon: <UnorderedListOutlined />,
-    // },
-    // {
-    //   key: "/setting",
-    //   label: <Link to="/setting">Setting</Link>,
-    //   icon: <SettingOutlined />,
-    // },
-    // {
-    //   key: "apps",
-    //   label: "Apps",
-    //   icon: <AppstoreOutlined />,
-    //   children: [
-    //     {
-    //       key: "chat",
-    //       label: "Chat",
-    //     },
-    //     {
-    //       key: "projects",
-    //       label: "Projects",
-    //       children: [
-    //         {
-    //           key: "projects-list",
-    //           label: "Projects List",
-    //         },
-    //         {
-    //           key: "project-detail",
-    //           label: "Project Detail",
-    //         },
-    //       ],
-    //     },
-    //   ],
+    },
+    {
+      key: "ranking",
+      label: <Link to="/ranking">Ranking</Link>,
+      icon: <GrAchievement />,
     },
   ];
 
   return (
     <>
       <Menu
-        defaultOpenKeys={["dashboard"]}
+        defaultOpenKeys={["/"]}
         defaultSelectedKeys={location.pathname}
         mode="inline"
         items={items}

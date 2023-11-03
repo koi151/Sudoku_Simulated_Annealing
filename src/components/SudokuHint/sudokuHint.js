@@ -18,12 +18,11 @@ function SudokuHint() {
   const boardId = useSelector((state) => state.sudoku.id);
   const hintLeft = useSelector((state) => state.sudoku.hintLeft);
 
-
   const updateSudoku = async () => {
     try {    
       dispatch(setSolving(true));
 
-      const solvedBoard = await gameService.update({
+      const solvedBoard = await gameService.solve({
         board: currentBoard,
         id: boardId
       });
@@ -36,22 +35,18 @@ function SudokuHint() {
     }
   }
 
-  const handleHintClick = async () => {
-    const hintButton = document.querySelector('.hint-btn');
-
-    if (!hintMode) {
-      hintButton.classList.add('active');
-      await updateSudoku();
+  const handleHintClick = async (e) => {
+    if (!hintMode) {      
       dispatch(setHintMode(true));
+      await updateSudoku();
     } else {
-      hintButton.classList.remove('active');
       dispatch(setHintMode(false));
     }
   };
 
   return (
     <Tooltip title='Hint' placement="right" color='#61bab779'>
-      <div onClick={handleHintClick} className='hint-btn btn-controllers'>
+      <div onClick={(e) => handleHintClick(e)} className={`hint-btn btn-controllers ${hintMode ? 'active' : ''}`}>
         <AiOutlineBulb/>
         <div className='hint-btn__hint-left'>
           {hintLeft}

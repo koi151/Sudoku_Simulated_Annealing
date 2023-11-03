@@ -21,11 +21,14 @@ function SudokuAutoSolve() {
       });
 
       dispatch(setAutoSolved(true));  
+
+      const cells = document.querySelectorAll('.cell');
+      cells.forEach(cell => {
+        cell.classList.remove('highlighted', 'active');
+      })
       
-      const userInputsAfter = document.querySelectorAll(".cell__input-value:not([disabled])");
-      console.log('userInputsAfter:', userInputsAfter);
+      const userInputsAfter = document.querySelectorAll(".cell__input-value:not([disabled])");      
       userInputsAfter.forEach(input => { 
-        console.log('input:', input);
         input.classList.add('v-hidden');
       })   
        

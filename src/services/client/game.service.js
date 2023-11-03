@@ -6,12 +6,12 @@ class GameServiceClient {
     this.api = createApiClient(baseUrl);
   }
 
-  async create(data) {
-    return (await this.api.post('/sudoku/create', data)).data;
+  async getAllRanking() {
+    return (await this.api.get("/ranking")).data;
   }
 
-  async update(data) {
-    return (await this.api.patch('/sudoku/update/:id', data)).data;
+  async create(data) {
+    return (await this.api.post('/sudoku/create', data)).data;
   }
 
   async solve(data) {

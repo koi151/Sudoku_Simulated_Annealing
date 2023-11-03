@@ -1,7 +1,9 @@
 .user-info {
+  background-color: #e3cd8371;
+
   &:hover {
     transform: scale(1.1) ;
-    background-color: #70afad79;
+    background-color: #dfbe5287;
   }
 
   svg {
@@ -12,5 +14,5 @@
 
 .info-input {
   margin: .5rem 0;
-  width: 25rem;
+  width: 28rem;
 }

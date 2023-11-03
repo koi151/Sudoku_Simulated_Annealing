@@ -25,7 +25,7 @@ function LayoutDefault() {
       const contentLayout = document.querySelector('.layout__content');
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
-      if (scrollTop > lastScrollTop && scrollTop > 50) {
+      if (scrollTop > lastScrollTop && scrollTop > 70) {
         contentLayout.classList.add('pad-lr-0');
        
         // Scrolling down, hide the navbar
@@ -35,7 +35,6 @@ function LayoutDefault() {
         } else {
           sider.style.left = '-200px';
         }
-          
 
       } else {
         // Scrolling up, show the navbar

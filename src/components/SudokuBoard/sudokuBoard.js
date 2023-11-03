@@ -61,7 +61,7 @@ function SudokuBoard() {
     // Remove previous class
     const cells = document.querySelectorAll('.cell'); // mixin
     cells.forEach(cell => {
-        cell.classList.remove('highlighted', 'active', 'user-inputed');
+        cell.classList.remove('highlighted', 'active');
     });
   
     const currentCell = e.target.parentNode;
@@ -156,8 +156,6 @@ function SudokuBoard() {
           if (mistake === true) {
             e.target.parentNode.classList.add('wrong-pos');
             dispatch(setLiveLeft(liveLeft - 1));
-          } if (liveLeft === 0) { 
-            dispatch(setGameStarted(false));
           }
         }
 
@@ -196,21 +194,20 @@ function SudokuBoard() {
 
   const handleSegmentedChange = (option) => {
     const standardlize = option.toLowerCase();
-    dispatch(setGameStarted(false));
 
     dispatch(resetSudoku());
-
     const newBoard = generateSudoku(standardlize);
-    dispatch(setInitialBoard(newBoard));
 
+    dispatch(setInitialBoard(newBoard));
     dispatch(setCurrentBoard(newBoard));
+
     const cells = document.querySelectorAll('.cell');
     cells.forEach(cell => {
       cell.classList.remove('user-inputed');
+
       const input = cell.querySelector('.cell__input-value');
       input.removeAttribute("disabled");
-      input.classList.remove('v-hidden');
-      input.classList.remove('auto-solve-effect');
+      // input.classList.remove('v-hidden', 'auto-solve-effect');
     })
 
   }
@@ -218,11 +215,10 @@ function SudokuBoard() {
   useEffect(() => {
     const cellInputs = document.querySelectorAll('.cell__input-value');
 
-    if (!gameStarted) {
+    if (!gameStarted) { // execute when pause or lose the game
       const cells = document.querySelectorAll('.cell');
       cells.forEach(cell => {
-        cell.classList.remove('highlighted');
-        cell.classList.remove('active');
+        cell.classList.remove('highlighted', 'active', 'wrong-pos', 'user-inputed');
       })
 
       cellInputs.forEach(input => {
@@ -243,9 +239,6 @@ function SudokuBoard() {
     }
   }, [gameStarted])
 
-  // console.log('moveHistory', moveHistory)
-  console.log('currentBoard', currentBoard);
-
   return (  
     <>
       <div className="sudoku-wrapper">
@@ -265,8 +258,8 @@ function SudokuBoard() {
         </div>
         <div className="sudoku-wrapper__bottom">
           <div className="table-wrapper">
-            {!gameStarted && liveLeft > 0 && 
-              <div className="pause-theme" onClick={() => toggleContinue()}>
+            {!gameStarted && liveLeft > 0 &&
+              <div className='pause-theme' onClick={() => toggleContinue()}>
                 <IoPlayCircle />
               </div>
             }

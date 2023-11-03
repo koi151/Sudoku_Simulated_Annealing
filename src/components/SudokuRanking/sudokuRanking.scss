@@ -1,0 +1,14 @@
+.ranking-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__table {
+    width: 70vw;
+  }
+}
+
+.ant-pagination-item-link {
+  color: #fff !important;
+}

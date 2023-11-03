@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { resetSudoku, setCurrentBoard, setGameStarted, setInitialBoard } from '../../redux/reduxSlices/sudokuSlice';
+import { resetSudoku, setCurrentBoard, setInitialBoard } from '../../redux/reduxSlices/sudokuSlice';
 import { generateSudoku } from '../../utils/generateSudoku.util';
 
 import { Popconfirm, Tooltip, message } from 'antd';
@@ -12,8 +12,6 @@ function SudokuReset() {
   const gameMode = useSelector((state) => state.sudoku.gameMode);
 
   const handleResetClick = () => {
-    dispatch(setGameStarted(false));
-
     dispatch(resetSudoku());
     const newBoard = generateSudoku(gameMode)
     dispatch(setInitialBoard(newBoard))

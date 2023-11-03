@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import './sudokuResult.scss'
 import gameService from '../../services/client/game.service';
 
-function SudokuResult({ win }) { ////////
+function SudokuResult({ win=null }) { 
   const dispatch = useDispatch(); 
 
   const autoSolved = useSelector((state) => state.sudoku.autoSolved);
@@ -16,9 +16,11 @@ function SudokuResult({ win }) { ////////
   const gameMode = useSelector((state) => state.sudoku.gameMode);
   const userName = useSelector((state) => state.sudoku.userName);
 
-  const handleResetClick = () => {
-    dispatch(setGameStarted(false));
+  const [title, setTitle] = useState(null);
+  const [description, setDescription] = useState(null);
+  const timeSolved = useRef();
 
+  const handleResetClick = () => {
     dispatch(resetSudoku());
     const newBoard = generateSudoku(gameMode);
     dispatch(setInitialBoard(newBoard))
@@ -28,34 +30,31 @@ function SudokuResult({ win }) { ////////
       cell.classList.remove('user-inputed', 'wrong-pos');
       const input = cell.querySelector('.cell__input-value');
       input.removeAttribute("disabled");
-      input.classList.remove('v-hidden', 'auto-solve-effect');
+      input.classList.remove('auto-solve-effect');
     })
 
     dispatch(setCurrentBoard(newBoard));
     const resultAlert = document.querySelector('.result-theme');
-    console.log('resultAlert:', resultAlert);
     resultAlert.classList.add('d-none');
   }
 
-  const [title, setTitle] = useState(null);
-  const [description, setDescription] = useState(null);
-  const timeSolved = useRef();
-
   useEffect(() => {
-    if (!win) {
+    if (autoSolved) return;
+    if (win === false) {
       setTitle('Game Over');
       setDescription('You have make 3 mistakes and lose the game');
-    } else {
+      dispatch(setGameStarted(false));
+      
+    } else if (win) {
       setTitle('Congratulation !');
       setDescription('You have won the game');
+
+      if (userName) {
+        timeSolved.current = document.querySelector('.time__display').innerHTML;
+        updateResultToDatabase(currentBoard, timeSolved);
+      }
     }
 
-    if (!autoSolved) {
-      document.querySelector('.result-theme').classList.remove('d-none');
-      timeSolved.current = document.querySelector('.time__display').innerHTML;
-      updateResultToDatabase(currentBoard, timeSolved);
-      dispatch(setGameStarted(false));
-    }
   }, [win])
 
   const updateResultToDatabase = async (currentBoard, timeSolved) => {
@@ -71,7 +70,7 @@ function SudokuResult({ win }) { ////////
   }
 
   return (
-    <div className="result-theme d-none">
+    <div className={`result-theme ${win === null ? 'd-none' : "" }`}>
       <div className='result-theme__box'>
         <h2 className='result-theme__box--title'>
           {title}
