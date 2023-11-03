@@ -15,12 +15,12 @@ function SudokuAutoSolve() {
   const handleAutoSolve = async () => {
     try {    
       if (!gameStarted) return
+      dispatch(setAutoSolved(true));  
 
       const solvedBoard = await gameService.solve({
         board: currentBoard,
       });
 
-      dispatch(setAutoSolved(true));  
 
       const cells = document.querySelectorAll('.cell');
       cells.forEach(cell => {

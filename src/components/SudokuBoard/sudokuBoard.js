@@ -263,7 +263,7 @@ function SudokuBoard() {
                 <IoPlayCircle />
               </div>
             }
-            {totalInputed === 81 && <SudokuResult win={true}/> }
+            {totalInputed === 81 && !autoSolved && <SudokuResult win={true}/> }
             {liveLeft === 0 && <SudokuResult win={false}/>}
             {currentBoard.length > 0 ? (
               <table className="sudoku-table">

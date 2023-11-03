@@ -44,7 +44,7 @@ function SudokuResult({ win=null }) {
       setTitle('Game Over');
       setDescription('You have make 3 mistakes and lose the game');
       dispatch(setGameStarted(false));
-      
+
     } else if (win) {
       setTitle('Congratulation !');
       setDescription('You have won the game');
@@ -68,6 +68,8 @@ function SudokuResult({ win=null }) {
       gameMode: gameMode
     });
   }
+
+  console.log('autoSolved',autoSolved)
 
   return (
     <div className={`result-theme ${win === null ? 'd-none' : "" }`}>
