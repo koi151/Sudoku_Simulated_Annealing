@@ -32,7 +32,7 @@ function countNonZeroInBlock(board, rowStart, colStart) {
   return count ;
 }
 
-function generateSudoku(gameMode) { 
+export function generateSudoku(gameMode) { 
   let totalGivenCell;
   switch (gameMode) {
     case 'easy':
@@ -98,8 +98,4 @@ function generateSudoku(gameMode) {
   }
 
   return board;
-}
-
-module.exports = {
-  generateSudoku
 }
