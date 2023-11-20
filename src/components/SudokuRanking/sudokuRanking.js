@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react';
 import gameService from '../../services/client/game.service';
-import './sudokuRanking.scss'
-import { Table } from 'antd';
+import { Select, Table, Tag } from 'antd';
 import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
+import './sudokuRanking.scss'
 
 
 function SudokuRanking() {
   const [usersData, setUsersData] = useState([]);
+  const navigate = useNavigate();
 
   const getUsers = async () => {
     try {
       const response = await gameService.getAllRanking();
-      const sortedData = response.sort((a, b) => a.createdAt - b.createdAt);
-      setUsersData(sortedData);
+      setUsersData(response);
     } catch (error) {
       console.error('ERROR OCCURED:', error);
     }
@@ -20,7 +21,6 @@ function SudokuRanking() {
 
   useEffect(() => {
     getUsers();
-    console.log('usersData:', usersData)
   }, []);
 
   const formatTimeSolved = (time) => {
@@ -35,6 +35,28 @@ function SudokuRanking() {
       title: 'User Name',
       dataIndex: 'userName',
       key: 'userName',
+    },
+    {
+      title: 'Game Mode',
+      dataIndex: 'gameMode',
+      key: 'gameMode',
+      render: (text, record) => {
+        let content;
+        switch (record.gameMode) {
+          case 'Easy':
+            content = (<Tag color='green'>{text}</Tag>);
+            break;
+          case 'Medium':
+            content = (<Tag color='yellow'>{text}</Tag>);
+            break;
+          case 'Hard':
+            content = (<Tag color='red'>{text}</Tag>);
+            break;
+          default:
+            break;
+        }
+        return content;
+      },
     },
     {
       title: 'Time Solved',
@@ -55,15 +77,49 @@ function SudokuRanking() {
     },
   ];
 
+  const handleChange = async (value) => {
+    navigate(`/ranking?gameMode=${value}`);
+    const response = await gameService.getAllRanking({
+      params: {
+        gameMode: value,
+      },
+    });
+    setUsersData(response);
+  };
+
   return (
-    <div className='ranking-wrapper'>
-      <Table 
-        dataSource={usersData} 
-        columns={columns}
-        className='ranking-wrapper__table'
-        rowKey={record => record._id.$oid}
-      />
-    </div>
+    <>
+      <div className='ranking-wrapper'>
+        <div className='select-wrapper'>
+          <span className='select-wrapper__text'>Filtering by</span>
+          <Select
+            defaultValue="All"
+            className='select-wrapper__tag'
+            onChange={handleChange}
+            options={[
+              {
+                value: 'Easy',
+                label: 'Easy mode',
+              },
+              {
+                value: 'Medium',
+                label: 'Medium mode',
+              },
+              {
+                value: 'Hard',
+                label: 'Hard mode',
+              },
+            ]}
+          />
+        </div>
+        <Table 
+          dataSource={usersData} 
+          columns={columns}
+          className='ranking-wrapper__table'
+          rowKey={record => record._id.$oid}
+        />
+      </div>
+    </>
   )
 }
 

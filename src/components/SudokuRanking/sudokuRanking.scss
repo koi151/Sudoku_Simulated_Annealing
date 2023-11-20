@@ -1,11 +1,31 @@
 .ranking-wrapper {
+  padding: 50px 0;
+  padding-bottom: 200px;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 
   &__table {
-    width: 70vw;
+    width: 85%;
+  }
+
+  .select-wrapper {
+    width: 85%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    &__text {
+      color: #fff;
+      margin-right: 1rem;
+    }
+
+    &__tag {
+      width: 15%;
+    }
   }
 }
 

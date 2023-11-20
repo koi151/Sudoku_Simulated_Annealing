@@ -15,8 +15,6 @@ function SudokuAutoSolve() {
   const handleAutoSolve = async () => {
     try {    
       if (!gameStarted) return
-      dispatch(setAutoSolved(true));  
-
       const solvedBoard = await gameService.solve({
         board: currentBoard,
       });
@@ -28,13 +26,17 @@ function SudokuAutoSolve() {
       })
       
       const userInputsAfter = document.querySelectorAll(".cell__input-value:not([disabled])");      
-      userInputsAfter.forEach(input => { 
-        input.classList.add('v-hidden');
-      })   
-       
+      userInputsAfter.forEach(input => {
+        if (!input.classList.contains('v-hidden')) {
+          input.classList.add('v-hidden');
+        }
+      })
+
+      dispatch(setAutoSolved(true));   
       dispatch(setCurrentBoard(solvedBoard));
 
     } catch (error) {
+      console.log('can nit')
       dispatch(setSolveError(error));
     }
   }

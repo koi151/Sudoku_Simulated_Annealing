@@ -15,7 +15,7 @@ function SiderMenu() {
     },
     {
       key: "ranking",
-      label: <Link to="/ranking">Ranking</Link>,
+      label: <Link to="/leaderboard">Leaderboard</Link>,
       icon: <GrAchievement />,
     },
   ];

@@ -51,7 +51,7 @@ function SudokuResult({ win=null }) {
 
       if (userName) {
         timeSolved.current = document.querySelector('.time__display').innerHTML;
-        updateResultToDatabase(currentBoard, timeSolved);
+        updateResultToDatabase(currentBoard, timeSolved, gameMode);
       }
     }
 
@@ -69,7 +69,6 @@ function SudokuResult({ win=null }) {
     });
   }
 
-  console.log('autoSolved',autoSolved)
 
   return (
     <div className={`result-theme ${win === null ? 'd-none' : "" }`}>

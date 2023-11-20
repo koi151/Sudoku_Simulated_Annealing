@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Input, Modal, Tooltip, message } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserName } from '../../redux/reduxSlices/sudokuSlice';
@@ -24,6 +24,9 @@ function SudokuUserInfo () {
 
   const userName = useSelector((state) => state.sudoku.userName);
 
+  useEffect(() => {
+
+  }, [userName])
 
   const success = () => {
     messageApi.open({

@@ -102,7 +102,6 @@ const sudokuSlice = createSlice({
         error: null,
       }
     }
-  
   }
 })
 

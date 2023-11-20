@@ -6,8 +6,8 @@ class GameServiceClient {
     this.api = createApiClient(baseUrl);
   }
 
-  async getAllRanking() {
-    return (await this.api.get("/ranking")).data;
+  async getAllRanking(option = {}) {
+    return (await this.api.get("/ranking", option)).data;
   }
 
   async create(data) {

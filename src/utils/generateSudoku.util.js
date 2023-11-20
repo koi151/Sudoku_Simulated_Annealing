@@ -1,11 +1,8 @@
-/*
- Hàm này nhận vào một mảng và một số lượng, sau đó trả về một mẫu ngẫu nhiên 
- từ mảng đó với số lượng phần tử được chỉ định.
-*/
-function getRandomSample(array, count) {
+// xáo trộn ngẫu nhiên các phần tử trong một mảng, sau đó trả về một mảng con chứa số lượng phần tử mong muốn
+function getRandomSample(array, count) { //  Fisher-Yates 
   let shuffled = array.slice(0), 
       i = array.length, 
-      min = i - count, 
+      min = i - count, // xác định giới hạn dưới
       temp, index;
 
   while (i-- > min) {
@@ -52,13 +49,13 @@ export function generateSudoku(gameMode) {
   let nums = Array.from({length: side}, (_, i) => i + 1); // number allowed (1 -> 9)
   let board = Array.from({length: side}, () => Array(side).fill(null)); // initial null board
 
-  // được sử dụng để tạo ra một mẫu cho bảng Sudoku
+  // Đảm bảo giá trị trong mỗi khối 3x3, dòng và cột không trùng lặp:
   function pattern(r, c) { 
+
     return (base * (r % base) + Math.floor(r / base) + c) % side; 
   }
 
   let rBase = Array.from({length: base}, (_, i) => i);  // [0, 1, 2]
-
 
   let rows = [];
   let cols = [];
@@ -82,17 +79,14 @@ export function generateSudoku(gameMode) {
   }
 
   let squares = side * side;
-  let empties = 81 - totalGivenCell // 3/4 => 25% of 81 appro 21    13/20
+  let empties = 81 - totalGivenCell
   for (let p of getRandomSample(Array.from({length: squares}, (_, i) => i), empties)) {
       board[Math.floor(p / side)][p % side] = 0;
   }
 
-  // console.log('rows:', rows)
-  // console.log('cols:', rows)
-
   for (let r = 0; r < 9; r += 3) {
     for (let c = 0; c < 9; c += 3) {
-      if (countNonZeroInBlock(board, r, c) > 6) 
+      if (countNonZeroInBlock(board, r, c) > 7) 
         return generateSudoku(gameMode);
     }
   }

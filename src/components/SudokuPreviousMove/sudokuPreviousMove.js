@@ -36,7 +36,6 @@ function SudokuPreviousMove() {
       });
 
       const previousPos = moveHistory[moveHistory.length-2];
-      console.log('previousPos:', previousPos);
       const previousRow = previousPos[0];
       const previousCol = previousPos[1]; 
 
@@ -67,7 +66,6 @@ function SudokuPreviousMove() {
       });
       dispatch(setCurrentBoard(newBoard));
 
-      console.log("moveHistory:", moveHistory);
     } catch (error) {
       console.log('ERROR OCCURED:', error);
     }

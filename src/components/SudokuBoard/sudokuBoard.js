@@ -2,7 +2,7 @@
 import { useEffect, memo } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentBoard, setLiveLeft, setGameStarted, 
-        setInitialBoard, resetSudoku, setHintLeft, addMoveToHistory } from "../../redux/reduxSlices/sudokuSlice";
+        setInitialBoard, resetSudoku, setHintLeft, addMoveToHistory, setGameMode } from "../../redux/reduxSlices/sudokuSlice";
 // NPM        
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -175,7 +175,7 @@ function SudokuBoard() {
           userInputs[index].classList.remove('v-hidden');
           userInputs[index].classList.add('auto-solve-effect');
 
-          const cell =  userInputs[index].parentNode;
+          const cell = userInputs[index].parentNode;
           cell.classList.add('user-inputed');
 
           addAutoSolveEffect(index + 1);
@@ -193,13 +193,14 @@ function SudokuBoard() {
   }
 
   const handleSegmentedChange = (option) => {
-    const standardlize = option.toLowerCase();
+    const normalizeOpt = option.toLowerCase();
 
     dispatch(resetSudoku());
-    const newBoard = generateSudoku(standardlize);
+    const newBoard = generateSudoku(normalizeOpt);
 
     dispatch(setInitialBoard(newBoard));
     dispatch(setCurrentBoard(newBoard));
+    dispatch(setGameMode(option));
 
     const cells = document.querySelectorAll('.cell');
     cells.forEach(cell => {
